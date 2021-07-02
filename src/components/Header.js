@@ -5,13 +5,19 @@ import {
   SearchIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/outline";
+import { signIn, signOut, useSession } from "next-auth/client";
+import { useRouter } from "next/router";
 
 function Header() {
+  const [session, loading] = useSession();
+  const router = useRouter();
+
   return (
     <header>
       <div className="flex items-center bg-amazon_blue p-1 flex-grow py-2">
         <div className="mt-2 flex items-center flex-grow sm:flex-grow-0">
           <Image
+            onClick={() => router.push("/")}
             src="https://1079life.com/wp-content/uploads/2018/12/amazon_PNG11.png"
             width={150}
             height={40}
@@ -27,15 +33,23 @@ function Header() {
           <SearchIcon className="h-12 p-4" />
         </div>
         <div className="text-white flex items-center text-xs space-x-6 mx-6 whitespace-nowrap">
-          <div className="link">
-            <p className="font-extrabold md:text-sm">Hello Joshe</p>
+          <div
+            onClick={!session ? signIn : signOut}
+            className="cursor-pointer link"
+          >
+            <p className="font-extrabold md:text-sm">
+              {session ? `Hello, ${session.user.name}` : "Sign In"}
+            </p>
             <p>Account & Lists</p>
           </div>
           <div className="link">
             <p className="font-extrabold md:text-sm">Returns</p>
             <p>& Orders</p>
           </div>
-          <div className="relative link flex items-center">
+          <div
+            onClick={() => router.push("/checkout")}
+            className="relative link flex items-center"
+          >
             <span className="absolute top-0 right-0 md:right-10 h-4 w-4 bg-yellow-400 text-center rounded-full text-black font-bold">
               0
             </span>
